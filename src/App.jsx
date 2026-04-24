@@ -1,4 +1,6 @@
 import React from 'react';
+import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { CatalogPage } from './pages/CatalogPage';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';

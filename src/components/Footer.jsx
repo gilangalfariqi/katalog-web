@@ -3,7 +3,7 @@ import { MessageCircle, Mail } from 'lucide-react';
 
 export function Footer() {
   const whatsappNumber = '082174128947';
-  const whatsappLink = `https://wa.me/${082174128947}?text=Halo%20Katalog!`;
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=Halo%20Katalog!`;
 
   return (
     <footer id="contact" className="border-t border-slate-800 bg-slate-900/50 pt-16 pb-8 relative overflow-hidden">
