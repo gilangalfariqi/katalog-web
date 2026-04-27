@@ -25,7 +25,7 @@ function getFashionLabel(category) {
 export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isWishlisted = false, whatsappNumber = '082174128947' }) {
   const [imageError, setImageError] = useState(false);
   
-  const whatsappMessage = encodeURIComponent(`Hi Niueuza Wear, I'm interested in ${product.name} (${product.formattedPrice})`);
+  const whatsappMessage = encodeURIComponent(`Hi Nieuza Wear, I'm interested in ${product.name} (${product.formattedPrice})`);
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   const handleCardClick = () => {
