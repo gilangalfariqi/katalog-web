@@ -1,10 +1,31 @@
 import React, { useState } from 'react';
 import { MessageCircle, Image as ImageIcon, Heart } from 'lucide-react';
 
-export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isWishlisted = false, whatsappNumber = '1234567890' }) {
+const CATEGORY_STYLES = {
+  'Daily Soft': 'bg-stone-100 text-stone-600 border-stone-200',
+  'Chic Look': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Trending Now': 'bg-rose-50 text-rose-600 border-rose-200',
+};
+
+function getCategoryStyle(category) {
+  return CATEGORY_STYLES[category] || 'bg-surface text-soft border-white/10';
+}
+
+function getFashionLabel(category) {
+  if (!category || category === 'All') return null;
+  // Map existing categories to fashion labels if possible
+  const labelMap = {
+    'Daily Soft': 'Daily Soft',
+    'Chic Look': 'Chic Look',
+    'Trending Now': 'Trending Now',
+  };
+  return labelMap[category] || category;
+}
+
+export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isWishlisted = false, whatsappNumber = '082174128947' }) {
   const [imageError, setImageError] = useState(false);
   
-  const whatsappMessage = encodeURIComponent(`Saya tertarik dengan produk ${product.name} dengan harga ${product.formattedPrice}`);
+  const whatsappMessage = encodeURIComponent(`Hi Niueuza Wear, I'm interested in ${product.name} (${product.formattedPrice})`);
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   const handleCardClick = () => {
@@ -12,32 +33,44 @@ export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isW
     if (onClick) onClick();
   };
 
+  const fashionLabel = getFashionLabel(product.category);
+
   return (
-    <div 
-      className="group glass-panel rounded-2xl overflow-hidden hover:-translate-y-2 transition-all duration-300 shadow-md hover:shadow-indigo-500/30 flex flex-col h-full animate-fade-in bg-slate-800/40 border border-slate-700/50 backdrop-blur-md cursor-pointer relative"
+    <div
+      className="group rounded-2xl overflow-hidden hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 shadow-md hover:shadow-xl hover:shadow-accent/10 flex flex-col h-full animate-fade-in bg-surface border border-white/5 cursor-pointer relative"
       style={{ animationDelay: `${index * 50}ms` }}
       onClick={handleCardClick}
     >
-      <div className="relative h-56 w-full overflow-hidden bg-slate-800/80 flex items-center justify-center">
-        {product.image && !imageError ? (
-          <img 
-            src={product.image} 
-            alt={product.name} 
+      <div className="relative h-56 w-full overflow-hidden bg-surface-light flex items-center justify-center">
+        {product.image_url && !imageError ? (
+          <img
+            src={product.image_url}
+            alt={product.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
             loading="lazy"
-            onError={() => setImageError(true)}
+            onError={(e) => {
+              e.target.src = '/fallback.png';
+              setImageError(true);
+            }}
           />
         ) : (
-          <ImageIcon className="w-16 h-16 text-slate-600" />
+          <ImageIcon className="w-16 h-16 text-soft/40" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        {/* Category Label */}
+        {fashionLabel && (
+          <div className={`absolute top-3 left-3 text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full border backdrop-blur-sm z-10 ${getCategoryStyle(product.category)}`}>
+            {fashionLabel}
+          </div>
+        )}
         
         {product.badge && (
-          <div className="absolute top-3 left-3 bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-indigo-500/30 flex items-center gap-1 z-10 backdrop-blur-sm bg-opacity-90">
+          <div className="absolute top-3 right-12 bg-accent text-text text-xs font-bold px-3 py-1 rounded-full shadow-lg shadow-accent/30 flex items-center gap-1 z-10 backdrop-blur-sm bg-opacity-90">
             {product.badge === 'Best Seller' && (
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-text opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-text"></span>
               </span>
             )}
             {product.badge}
@@ -52,8 +85,8 @@ export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isW
           }}
           className={`absolute top-3 right-3 p-2 rounded-full z-10 backdrop-blur-sm transition-all duration-300 ${
             isWishlisted 
-              ? 'bg-rose-500/20 text-rose-500 hover:bg-rose-500/30' 
-              : 'bg-slate-900/40 text-white/70 hover:bg-slate-900/60 hover:text-white'
+              ? 'bg-rose-500/20 text-rose-400 hover:bg-rose-500/30' 
+              : 'bg-background/40 text-soft/70 hover:bg-background/60 hover:text-text'
           }`}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
         >
@@ -62,18 +95,18 @@ export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isW
       </div>
       
       <div className="p-5 flex flex-col flex-grow">
-        <h3 className="text-lg font-bold text-slate-50 mb-1 line-clamp-1">{product.name}</h3>
-        <p className="text-slate-400 text-sm mb-4 line-clamp-2 flex-grow">{product.description}</p>
+        <h3 className="text-lg font-bold text-text mb-1 line-clamp-1 group-hover:text-accent transition-colors duration-300">{product.name}</h3>
+        <p className="text-soft/80 text-sm mb-4 line-clamp-2 flex-grow">{product.description}</p>
         
         <div className="mt-auto flex flex-col gap-4">
-          <span className="text-xl font-extrabold text-indigo-400">{product.formattedPrice}</span>
+          <span className="text-xl font-extrabold text-accent">{product.formattedPrice}</span>
           
           <a 
             href={whatsappLink} 
             target="_blank" 
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl py-3 px-4 transition-all duration-300 shadow-lg shadow-indigo-500/20 active:scale-[0.98]"
+            className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary-light hover:to-accent text-white font-medium rounded-xl py-3 px-4 transition-all duration-300 shadow-lg shadow-accent/20 hover:shadow-accent/40 active:scale-[0.98]"
             aria-label={`Contact on WhatsApp about ${product.name}`}
           >
             <MessageCircle size={18} />
@@ -84,3 +117,4 @@ export function ProductCard({ product, index = 0, onClick, onToggleWishlist, isW
     </div>
   );
 }
+

@@ -10,4 +10,16 @@ export class ProductRepository {
   async searchProducts(query) {
     throw new Error('Method not implemented.');
   }
+
+  async getProductsByIds(ids) {
+    throw new Error('Method not implemented.');
+  }
+
+  async getCategories() {
+    throw new Error('Method not implemented.');
+  }
+
+  async getProductsByCategory(category) {
+    throw new Error('Method not implemented.');
+  }
 }

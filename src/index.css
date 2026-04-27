@@ -1,17 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #4f46e5;
-  --color-primary-hover: #4338ca;
-  --color-bg-base: #0f172a;
-  --color-bg-surface: #1e293b;
-  --color-text-base: #f8fafc;
-  --color-text-muted: #94a3b8;
+  --color-primary: #8B5E3C;
+  --color-primary-dark: #6B4F3B;
+  --color-primary-light: #A67B5B;
+  --color-secondary: #F5E9DC;
+  --color-bg-base: #FAF6F1;
+  --color-bg-surface: #FFFFFF;
+  --color-bg-surface-light: #F7F2EC;
+  --color-accent: #D4A373;
+  --color-text-base: #2D2420;
+  --color-text-soft: #5C4D42;
+  --color-text-muted: #8B7D6F;
 }
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
   html {
     scroll-behavior: smooth;
@@ -28,14 +33,44 @@
 
 @layer utilities {
   .glass-panel {
-    background: rgba(30, 41, 59, 0.6);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.06);
   }
-  
+
+  .glass-panel-strong {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 20px rgba(212, 163, 115, 0.25);
+  }
+
+  .glow-accent-lg {
+    box-shadow: 0 0 40px rgba(212, 163, 115, 0.35);
+  }
+
+  .text-gradient-warm {
+    background: linear-gradient(135deg, #8B5E3C 0%, #D4A373 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-gradient-warm {
+    background: linear-gradient(135deg, #8B5E3C 0%, #D4A373 100%);
+  }
+
   .animate-fade-in {
     animation: fadeIn 0.6s ease-out forwards;
+  }
+
+  .animate-modal-in {
+    animation: modalIn 0.25s ease-out forwards;
   }
 }
 
@@ -49,3 +84,15 @@
     transform: translateY(0);
   }
 }
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+

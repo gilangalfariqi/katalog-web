@@ -2,12 +2,14 @@
  * Product Entity
  */
 export class Product {
-  constructor({ id, name, price, image, description }) {
+  constructor({ id, name, price, image_url, description, category, badge }) {
     this.id = id;
     this.name = name;
     this.price = price;
-    this.image = image;
+    this.image_url = image_url;
     this.description = description;
+    this._category = category;
+    this._badge = badge;
   }
 
   // Domain logic can be added here, e.g., formatted price
@@ -19,8 +21,9 @@ export class Product {
     }).format(this.price);
   }
 
-  // Infer category based on product name for frontend filtering
+  // Use category from DB if available, otherwise infer from name
   get category() {
+    if (this._category) return this._category;
     const n = this.name.toLowerCase();
     if (n.includes('keyboard') || n.includes('mouse') || n.includes('desk')) return 'Desktop';
     if (n.includes('headphone') || n.includes('speaker') || n.includes('audio')) return 'Audio';
@@ -28,8 +31,9 @@ export class Product {
     return 'Other';
   }
 
-  // Generate a consistent pseudo-random badge based on the string length and id
+  // Use badge from DB if available, otherwise generate pseudo-random
   get badge() {
+    if (this._badge !== undefined && this._badge !== null) return this._badge;
     const hash = (this.name.length + (this.id ? this.id.charCodeAt(0) : 0)) % 4;
     switch (hash) {
       case 0: return 'Best Seller';
