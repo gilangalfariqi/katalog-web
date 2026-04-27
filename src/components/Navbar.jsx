@@ -17,7 +17,7 @@ export function Navbar() {
               alt="Nieuza Wear" 
               className="h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
             />
-            <span className="text-xl font-serif font-bold bg-gradient-to-r from-primary-dark to-primary bg-clip-text text-transparent tracking-wide">Nieuza Wear</span>
+            <span className="text-xl font-serif font-bold bg-gradient-to-r from-white to-accent bg-clip-text text-transparent tracking-wide">Nieuza Wear</span>
           </a>
           
           {/* Desktop Navigation */}
