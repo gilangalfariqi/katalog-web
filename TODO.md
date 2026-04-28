@@ -1,18 +1,11 @@
-# Refactor Product Detail Modal - TODO
+# Footer Refactor TODO
 
-## Steps Completed
-- [x] Step 1: Read & analyze ProductModal.jsx, Tailwind config, index.css, CatalogPage.jsx, App.jsx
-- [x] Step 2: Create TODO tracking file
-- [x] Step 3: Refactor ProductModal.jsx with all requirements
-  - [x] 1. Overlay with bg-black/50 + backdrop-blur-sm + z-40
-  - [x] 2. Solid modal container (bg-white, shadow-2xl, rounded-2xl, overflow-hidden)
-  - [x] 3. Grid layout (md:grid-cols-2)
-  - [x] 4. Fix image area (bg-gray-100, object-cover)
-  - [x] 5. Typography (text-gray-900, text-gray-500, text-primary)
-  - [x] 6. Gradient button with rounded-xl, shadow-md, hover:scale-105
-  - [x] 7. Close button fixed position (absolute top-4 right-4)
-  - [x] 8. Z-index fix (overlay z-40, modal z-50)
-  - [x] 9. Remove transparent/opacity mistakes
-  - [x] 10. UX improvements (transition, scale-in animation, close on overlay click)
-- [x] Step 4: Verify no other files need changes
+- [x] 1. Update Footer background to dark color (`bg-[#3e2f25]`) with white text and top border separator (`border-t border-white/10`).
+- [x] 2. Adjust padding to `py-16 px-6`.
+- [x] 3. Update text hierarchy: titles `text-white font-semibold text-lg`, descriptions `text-white/70 text-sm`, links `text-white/60`.
+- [x] 4. Add link hover effects: `transition-all duration-300 hover:translate-x-1`.
+- [x] 5. Update contact/social icons styling for dark background (`bg-white/10 border-white/10`).
+- [x] 6. Refactor footer bottom copyright section with separator and centered text.
+- [x] 7. Add premium subtle glow effect (`bg-white/5 blur-[80px]`).
+- [x] 8. Ensure responsive layout: `text-center` on mobile, `md:grid-cols-3` and `md:text-left` on desktop.
 
