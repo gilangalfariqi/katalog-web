@@ -15,6 +15,8 @@ export class GetProductsUseCase {
 /**
  * SearchProductsUseCase
  * Coordinates searching products from the repository.
+ *
+ * CRITICAL: If query is empty, return ALL products (don't apply search filter).
  */
 export class SearchProductsUseCase {
   constructor(productRepository) {
@@ -22,10 +24,19 @@ export class SearchProductsUseCase {
   }
 
   async execute(query) {
+    console.log('🔍 [UseCase] SearchProducts.execute() - query:', query);
+
     if (!query || query.trim() === '') {
-      return await this.productRepository.getProducts();
+      console.log('🔍 [UseCase] Query is empty - returning ALL products');
+      const allProducts = await this.productRepository.getProducts();
+      console.log(`✅ [UseCase] Returned ${allProducts.length} products (no search filter applied)`);
+      return allProducts;
     }
-    return await this.productRepository.searchProducts(query);
+
+    console.log(`🔍 [UseCase] Searching for: "${query}"`);
+    const results = await this.productRepository.searchProducts(query);
+    console.log(`✅ [UseCase] Search found ${results.length} products`);
+    return results;
   }
 }
 
@@ -61,6 +72,9 @@ export class GetCategoriesUseCase {
 /**
  * GetProductsByCategoryUseCase
  * Coordinates retrieving products filtered by category from the repository.
+ *
+ * CRITICAL: If category is 'All', fetch ALL products without any category filter.
+ * This ensures "Semua Koleksi" displays the complete product list.
  */
 export class GetProductsByCategoryUseCase {
   constructor(productRepository) {
@@ -68,9 +82,19 @@ export class GetProductsByCategoryUseCase {
   }
 
   async execute(category) {
-    if (!category || category === 'All') {
-      return await this.productRepository.getProducts();
+    console.log(`🔀 [UseCase] GetProductsByCategory.execute("${category}")`);
+
+    // CRITICAL: Handle 'All' category explicitly
+    if (!category || category === 'All' || category === 'all') {
+      console.log('🔀 [UseCase] Category is "All" - fetching ALL products without filter');
+      const allProducts = await this.productRepository.getProducts();
+      console.log(`✅ [UseCase] Fetched ALL ${allProducts.length} products`);
+      return allProducts;
     }
-    return await this.productRepository.getProductsByCategory(category);
+
+    console.log(`🔀 [UseCase] Category is "${category}" - applying filter`);
+    const filteredProducts = await this.productRepository.getProductsByCategory(category);
+    console.log(`✅ [UseCase] Fetched ${filteredProducts.length} products for category "${category}"`);
+    return filteredProducts;
   }
 }

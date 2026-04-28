@@ -21,8 +21,11 @@ export function useProducts() {
       setLoading(true);
       setError(null);
       const data = await getProductsUseCase.execute();
+      console.log('🎣 [Hook] fetchProducts() - Received', data.length, 'products from use case');
+      console.log('📋 [Hook] Products state updated with', data.length, 'items');
       setProducts(data);
     } catch (err) {
+      console.error('❌ [Hook] fetchProducts error:', err);
       setError(err.message || 'Failed to fetch products');
     } finally {
       setLoading(false);
@@ -45,9 +48,12 @@ export function useProducts() {
     try {
       setLoading(true);
       setError(null);
+      console.log('🔍 [Hook] searchProducts() - Searching for:', query);
       const data = await searchProductsUseCase.execute(query);
+      console.log('🔍 [Hook] Search returned', data.length, 'products');
       setProducts(data);
     } catch (err) {
+      console.error('❌ [Hook] searchProducts error:', err);
       setError(err.message || 'Failed to search products');
     } finally {
       setLoading(false);
@@ -58,9 +64,17 @@ export function useProducts() {
     try {
       setLoading(true);
       setError(null);
+      console.log(`📂 [Hook] fetchByCategory("${category}") - Starting category filter`);
       const data = await getProductsByCategoryUseCase.execute(category);
+      console.log(`📂 [Hook] Category filter returned ${data.length} products`);
+      console.log(`📊 [Hook] Details:`, {
+        category,
+        count: data.length,
+        isFetchingAll: category === 'All',
+      });
       setProducts(data);
     } catch (err) {
+      console.error('❌ [Hook] fetchByCategory error:', err);
       setError(err.message || 'Failed to fetch products by category');
     } finally {
       setLoading(false);

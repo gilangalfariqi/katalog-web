@@ -8,16 +8,24 @@ export class SupabaseProductRepository extends ProductRepository {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .order('id', { ascending: true });
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Supabase fetch error:', error);
-        throw new Error(error.message || 'Failed to fetch products from Supabase');
-      }
+      if (error) throw new Error(error.message || 'Failed to fetch products');
 
-      return data ? data.map(item => new Product(item)) : [];
+      console.log(data); // debug: verify rating, sold, review_count, discount fields from Supabase
+
+      const products = (data || []).map(item => new Product(item));
+      console.log('✅ [Repository] getProducts() - Fetched', products.length, 'products');
+      console.log('📊 [Repository] Product Summary:', {
+        total: products.length,
+        featured: products.filter(p => p.is_featured).length,
+        regular: products.filter(p => !p.is_featured).length,
+        categories: [...new Set(products.map(p => p.category))].length,
+      });
+
+      return products;
     } catch (error) {
-      console.error('Network or unexpected error during fetch:', error);
+      console.error('❌ [Repository] getProducts error:', error);
       throw error;
     }
   }
@@ -28,16 +36,14 @@ export class SupabaseProductRepository extends ProductRepository {
         .from('products')
         .select('*')
         .ilike('name', `%${query}%`)
-        .order('id', { ascending: true });
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Supabase search error:', error);
-        throw new Error(error.message || 'Failed to search products in Supabase');
-      }
-
-      return data ? data.map(item => new Product(item)) : [];
+      if (error) throw new Error(error.message || 'Failed to search products');
+      const products = (data || []).map(item => new Product(item));
+      console.log('🔍 [Repository] searchProducts() - Found', products.length, 'products for query:', query);
+      return products;
     } catch (error) {
-      console.error('Network or unexpected error during search:', error);
+      console.error('❌ [Repository] searchProducts error:', error);
       throw error;
     }
   }
@@ -48,17 +54,14 @@ export class SupabaseProductRepository extends ProductRepository {
       const { data, error } = await supabase
         .from('products')
         .select('*')
-        .in('id', ids)
-        .order('id', { ascending: true });
+        .in('id', ids);
 
-      if (error) {
-        console.error('Supabase getProductsByIds error:', error);
-        throw new Error(error.message || 'Failed to fetch products by IDs from Supabase');
-      }
-
-      return data ? data.map(item => new Product(item)) : [];
+      if (error) throw new Error(error.message || 'Failed to fetch products by IDs');
+      const products = (data || []).map(item => new Product(item));
+      console.log('🎯 [Repository] getProductsByIds() - Fetched', products.length, 'products');
+      return products;
     } catch (error) {
-      console.error('Network or unexpected error during getProductsByIds:', error);
+      console.error('❌ [Repository] getProductsByIds error:', error);
       throw error;
     }
   }
@@ -69,15 +72,13 @@ export class SupabaseProductRepository extends ProductRepository {
         .from('products')
         .select('category');
 
-      if (error) {
-        console.error('Supabase getCategories error:', error);
-        throw new Error(error.message || 'Failed to fetch categories from Supabase');
-      }
-
-      const uniqueCategories = [...new Set((data || []).map(d => d.category).filter(Boolean))];
-      return uniqueCategories.sort();
+      if (error) throw new Error(error.message || 'Failed to fetch categories');
+      const unique = [...new Set((data || []).map(d => d.category).filter(Boolean))];
+      const sorted = unique.sort();
+      console.log('📂 [Repository] getCategories() - Found', sorted.length, 'categories:', sorted);
+      return sorted;
     } catch (error) {
-      console.error('Network or unexpected error during getCategories:', error);
+      console.error('❌ [Repository] getCategories error:', error);
       throw error;
     }
   }
@@ -88,16 +89,14 @@ export class SupabaseProductRepository extends ProductRepository {
         .from('products')
         .select('*')
         .eq('category', category)
-        .order('id', { ascending: true });
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Supabase getProductsByCategory error:', error);
-        throw new Error(error.message || 'Failed to fetch products by category from Supabase');
-      }
-
-      return data ? data.map(item => new Product(item)) : [];
+      if (error) throw new Error(error.message || 'Failed to fetch products by category');
+      const products = (data || []).map(item => new Product(item));
+      console.log(`📂 [Repository] getProductsByCategory("${category}") - Fetched`, products.length, 'products');
+      return products;
     } catch (error) {
-      console.error('Network or unexpected error during getProductsByCategory:', error);
+      console.error('❌ [Repository] getProductsByCategory error:', error);
       throw error;
     }
   }
