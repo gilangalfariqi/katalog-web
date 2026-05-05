@@ -1,38 +1,54 @@
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingBag } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
-export function Navbar() {
+export function Navbar({ onOpenCart }) {
+  const { totals } = useCart();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
-
   return (
-    <header className="sticky top-0 z-50 bg-primary-dark/80 backdrop-blur-md border-b border-white/5 shadow-md transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300">
+      <div className="container-max">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-3 group">
-            <img 
-              src="/nieuza1.png" 
-              alt="Nieuza Wear" 
-              className="h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
-            />
-            <span className="text-xl font-serif font-bold bg-gradient-to-r from-white to-accent bg-clip-text text-transparent tracking-wide">Nieuza Wear</span>
+          <a href="/" className="flex items-center gap-3 group">
+            <img src="/nieuzaLogo-nobg.png" alt="Nieuza wear Logo" className="h-12 w-auto group-hover:scale-110 transition-transform duration-300" />
+            <span className="text-2xl font-serif font-black text-brown-900 tracking-tight group-hover:text-primary transition-colors">
+              Nieuza <span className="text-primary italic">wear</span>
+            </span>
           </a>
-          
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-soft">
-            <a href="#" className="hover:text-accent transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-accent after:transition-all duration-300">Home</a>
-            <a href="#products" className="hover:text-accent transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-accent after:transition-all duration-300">Collection</a>
-            <a href="#contact" className="hover:text-accent transition-colors py-2 relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 hover:after:w-full after:bg-accent after:transition-all duration-300">Contact</a>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-10">
+            <a href="#new-arrivals" className="text-sm font-bold uppercase tracking-widest text-brown-400 hover:text-brown-900 transition-colors">
+              New Arrivals
+            </a>
+            <a href="#collection" className="text-sm font-bold uppercase tracking-widest text-brown-400 hover:text-brown-900 transition-colors">
+              Collection
+            </a>
+            <a href="#philosophy" className="text-sm font-bold uppercase tracking-widest text-brown-400 hover:text-brown-900 transition-colors">
+              Philosophy
+            </a>
           </nav>
 
-          {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button 
-              onClick={toggleMenu}
-              className="text-soft hover:text-text p-2 focus:outline-none"
-              aria-label="Toggle menu"
+          {/* Icons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onOpenCart}
+              className="relative p-3 text-brown-900 hover:bg-beige-50 rounded-2xl transition-all group"
+              aria-label="View bag"
+            >
+              <ShoppingBag size={24} className="group-hover:scale-110 transition-transform" />
+              {totals.itemCount > 0 && (
+                <span className="absolute top-2 right-2 w-5 h-5 bg-primary text-white text-[10px] font-black rounded-full flex items-center justify-center shadow-lg ring-2 ring-white">
+                  {totals.itemCount}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-3 text-brown-900 hover:bg-beige-50 rounded-2xl transition-all"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -40,35 +56,25 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Dropdown */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-20 left-0 w-full bg-background/95 backdrop-blur-xl border-b border-white/5 shadow-2xl animate-fade-in">
-          <div className="px-4 pt-2 pb-6 flex flex-col gap-4">
-            <a 
-              href="#" 
-              onClick={toggleMenu}
-              className="text-base font-medium text-soft hover:text-accent hover:bg-surface/40 px-4 py-3 rounded-xl transition-colors"
-            >
-              Home
-            </a>
-            <a 
-              href="#products" 
-              onClick={toggleMenu}
-              className="text-base font-medium text-soft hover:text-accent hover:bg-surface/40 px-4 py-3 rounded-xl transition-colors"
-            >
-              Collection
-            </a>
-            <a 
-              href="#contact" 
-              onClick={toggleMenu}
-              className="text-base font-medium text-soft hover:text-accent hover:bg-surface/40 px-4 py-3 rounded-xl transition-colors"
-            >
-              Contact
-            </a>
-          </div>
-        </div>
-      )}
+      {/* Mobile Nav */}
+      <div
+        className={`md:hidden absolute top-full left-0 w-full bg-white border-b border-gray-100 transition-all duration-500 overflow-hidden ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+          }`}
+      >
+        <nav className="p-6 flex flex-col gap-6">
+          <a href="#new-arrivals" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-serif font-black text-brown-900 border-b border-gray-50 pb-2">
+            New Arrivals
+          </a>
+          <a href="#collection" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-serif font-black text-brown-900 border-b border-gray-50 pb-2">
+            Collection
+          </a>
+          <a href="#philosophy" onClick={() => setIsMobileMenuOpen(false)} className="text-lg font-serif font-black text-brown-900 border-b border-gray-50 pb-2">
+            Philosophy
+          </a>
+        </nav>
+      </div>
     </header>
   );
 }
+
 

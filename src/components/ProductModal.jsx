@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, MessageCircle, Image as ImageIcon, Tag } from 'lucide-react';
+import { X, MessageCircle, Image as ImageIcon } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 
 function StarRating({ rating, reviewCount }) {
   const full = Math.floor(rating);
@@ -14,8 +16,10 @@ function StarRating({ rating, reviewCount }) {
   );
 }
 
-export function ProductModal({ product, onClose, whatsappNumber = '082174128947' }) {
+export function ProductModal({ product, onClose }) {
   const [imageError, setImageError] = useState(false);
+  const { addToCart, isInCart } = useCart();
+  const { showToast } = useToast();
 
   // ESC to close
   useEffect(() => {
@@ -26,50 +30,50 @@ export function ProductModal({ product, onClose, whatsappNumber = '082174128947'
 
   // Lock body scroll
   useEffect(() => {
-    document.body.style.overflow = product ? 'hidden' : '';
+    if (product) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
     return () => { document.body.style.overflow = ''; };
   }, [product]);
 
   if (!product) return null;
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    showToast(`"${product.name}" added to bag`, 'success');
+  };
+
   const waMessage = encodeURIComponent(
-    `Halo Nieuza Wear, saya tertarik dengan produk "${product.name}" seharga ${product.formattedPrice}. Apakah masih tersedia?`
+    `Halo Niueza, saya tertarik dengan "${product.name}" (${product.formattedPrice}). Apakah masih tersedia?`
   );
-  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
+  const whatsappLink = `https://wa.me/082174128947?text=${waMessage}`;
 
   return (
     <>
-      {/* Overlay — z-40 */}
+      {/* Overlay */}
       <div
-        className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md transition-opacity duration-500"
         onClick={onClose}
-        aria-hidden="true"
       />
 
-      {/* Modal wrapper — z-50, click outside closes */}
-      <div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-        onClick={onClose}
-      >
-        {/* Panel — stop propagation so inner clicks don't close */}
-        <div
-          className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:grid md:grid-cols-2 animate-modal-in"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-product-title"
+      {/* Modal Container */}
+      <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 lg:p-8 pointer-events-none">
+        <article 
+          className="relative w-full max-w-5xl max-h-[90vh] bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col md:flex-row pointer-events-auto animate-modal-in"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* ── Close ── */}
+          {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center bg-white hover:bg-gray-100 text-gray-500 hover:text-gray-900 rounded-full shadow-md border border-gray-200 transition-all duration-200"
-            aria-label="Tutup modal"
+            className="absolute top-6 right-6 z-10 p-3 bg-white/80 backdrop-blur-md text-brown-900 rounded-full shadow-lg hover:bg-white transition-all group"
           >
-            <X size={18} />
+            <X size={24} className="group-hover:rotate-90 transition-transform" />
           </button>
 
-          {/* ── LEFT: Image ── */}
-          <div className="relative w-full h-64 md:h-auto md:min-h-[500px] bg-gray-100 overflow-hidden flex items-center justify-center shrink-0">
+          {/* Left: Image */}
+          <div className="md:w-1/2 relative bg-beige-50">
             {product.image_url && !imageError ? (
               <img
                 src={product.image_url}
@@ -78,114 +82,72 @@ export function ProductModal({ product, onClose, whatsappNumber = '082174128947'
                 onError={() => setImageError(true)}
               />
             ) : (
-              <ImageIcon className="w-24 h-24 text-gray-300" />
-            )}
-
-            {/* Category badge */}
-            {product.category && product.category !== 'All' && product.category !== 'Other' && (
-              <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-xs font-semibold text-gray-700 px-3 py-1.5 rounded-full shadow-sm border border-gray-100">
-                {product.category}
-              </div>
-            )}
-
-            {/* Product badge */}
-            {product.badge && (
-              <div className={`absolute top-4 right-14 text-xs font-bold px-3 py-1.5 rounded-full shadow-md ${
-                product.badge === 'Best Seller'
-                  ? 'bg-amber-500 text-white'
-                  : product.badge === 'New'
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-primary text-white'
-              }`}>
-                {product.badge}
+              <div className="w-full h-full flex items-center justify-center bg-beige-100">
+                <ImageIcon size={64} className="text-brown-200" />
               </div>
             )}
           </div>
 
-          {/* ── RIGHT: Details ── */}
-          <div className="flex flex-col bg-white p-6 sm:p-8 overflow-y-auto">
-
-            {/* Category tag */}
-            <div className="flex items-center gap-2 mb-4">
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1.5 rounded-full">
-                <Tag size={11} />
-                {product.category || 'Fashion'}
-              </span>
-            </div>
-
-            {/* Name */}
-            <h2
-              id="modal-product-title"
-              className="text-2xl font-semibold text-gray-900 leading-snug mb-2"
-            >
-              {product.name}
-            </h2>
-
-            {/* Rating & Sold */}
-            <div className="mb-4 flex items-center gap-4">
-              <StarRating rating={product.rating} reviewCount={product.review_count} />
-              <span className="text-xs text-orange-600 font-semibold">🔥 Terjual {product.sold}+</span>
-            </div>
-
-            {/* Dynamic Discount Flag */}
-            {product.discount && (
-              <div className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full mb-4 inline-block">
-                Diskon hari ini
-              </div>
-            )}
-
-            {/* Price */}
-            <div className="flex flex-col gap-0.5 mb-6">
-              {product.hasDiscount && (
-                <span className="text-sm text-gray-400 line-through">
-                  {product.formattedOriginalPrice}
+          {/* Right: Details */}
+          <div className="md:w-1/2 flex flex-col p-8 md:p-12 lg:p-16 overflow-y-auto custom-scrollbar">
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <span className="inline-block px-4 py-1 bg-beige-100 text-brown-400 text-xs font-bold uppercase tracking-widest rounded-full">
+                  {product.category || 'Collection'}
                 </span>
-              )}
-              <span className="text-xl font-bold text-primary">
-                {product.formattedPrice}
-              </span>
-            </div>
+                <h2 className="text-4xl lg:text-5xl font-serif font-black text-brown-900 leading-tight">
+                  {product.name}
+                </h2>
+                <div className="flex items-baseline gap-4">
+                  <span className="text-3xl font-black text-brown-900">
+                    {product.formattedPrice}
+                  </span>
+                  {product.hasDiscount && product.originalPrice && (
+                    <span className="text-xl text-brown-300 line-through font-medium">
+                      {product.formattedOriginalPrice}
+                    </span>
+                  )}
+                </div>
+              </div>
 
-            {/* Divider */}
-            <div className="h-px bg-gray-100 mb-6" />
+              <div className="h-px bg-gray-100" />
 
-            {/* Description */}
-            <div className="flex-grow mb-6">
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-gray-400 mb-2">
-                Deskripsi Produk
-              </h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                {product.description || 'Tidak ada deskripsi detail untuk produk ini.'}
-              </p>
-            </div>
+              <div className="space-y-4">
+                <h4 className="text-xs font-bold uppercase tracking-widest text-brown-900">Description</h4>
+                <p className="text-brown-600 text-lg font-light leading-relaxed">
+                  {product.description || 'Premium quality fashion piece, crafted with attention to detail and modern elegance. Perfect for creating effortless, timeless looks.'}
+                </p>
+              </div>
 
-            {/* Shipping note */}
-            <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 mb-6 text-xs text-amber-700">
-              <span className="mt-0.5 shrink-0">📦</span>
-              <span>Pemesanan &amp; informasi ketersediaan stok dikonfirmasi langsung melalui WhatsApp.</span>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-auto pt-5 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-accent text-white font-semibold rounded-xl py-3.5 px-6 shadow-md transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
-              >
-                <MessageCircle size={20} />
-                <span>Pesan Sekarang</span>
-              </a>
-              <button
-                onClick={onClose}
-                className="sm:w-auto px-6 py-3.5 rounded-xl font-medium text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all duration-200"
-              >
-                Kembali
-              </button>
+              {/* Actions */}
+              <div className="pt-8 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <button
+                    onClick={handleAddToCart}
+                    disabled={isInCart(product.id)}
+                    className="w-full btn-primary disabled:bg-gray-400"
+                  >
+                    {isInCart(product.id) ? 'Added to Bag' : 'Add to Bag'}
+                  </button>
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 border-2 border-brown-900 text-brown-900 font-bold rounded-2xl hover:bg-brown-900 hover:text-white transition-all"
+                  >
+                    <MessageCircle size={20} />
+                    <span>Inquiry</span>
+                  </a>
+                </div>
+                <p className="text-center text-xs text-brown-300">
+                  Free shipping on orders over IDR 1.000.000
+                </p>
+              </div>
             </div>
           </div>
-        </div>
+        </article>
       </div>
     </>
   );
 }
+

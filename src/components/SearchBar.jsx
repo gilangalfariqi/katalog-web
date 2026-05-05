@@ -24,62 +24,65 @@ export function SearchBar({
   };
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
-      {/* Search Input */}
-      <div className="relative group w-full lg:max-w-md xl:max-w-lg shrink-0">
-        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-          <Search className="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+    <div className="w-full space-y-8">
+      {/* Search Input Container */}
+      <div className="relative max-w-2xl mx-auto group">
+        <div className="absolute inset-y-0 left-5 flex items-center pointer-events-none">
+          <Search className="h-6 w-6 text-brown-300 group-focus-within:text-primary transition-colors" />
         </div>
         <input
           type="text"
-          className="w-full bg-white border border-gray-200 text-gray-900 placeholder-gray-400 rounded-2xl py-4 pl-12 pr-12 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all shadow-sm hover:shadow-md"
-          placeholder="Cari koleksi fashion..."
+          className="w-full bg-white border border-beige-200 text-brown-900 placeholder-brown-300 rounded-2xl py-5 pl-14 pr-14 focus:outline-none focus:ring-4 focus:ring-primary/5 focus:border-primary/30 transition-all shadow-sm hover:shadow-luxury text-lg"
+          placeholder="Search our collection..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         {query && (
           <button
             onClick={clearSearch}
-            className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-700 transition-colors"
-            aria-label="Hapus pencarian"
+            className="absolute inset-y-0 right-5 flex items-center text-brown-300 hover:text-brown-900 transition-colors"
+            aria-label="Clear search"
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </button>
         )}
       </div>
 
-      {/* Category Pills */}
-      <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start lg:justify-end flex-1">
-        <div className="flex items-center gap-1.5 text-gray-400 mr-1 text-sm shrink-0">
-          <Filter size={15} />
-          <span className="hidden sm:inline text-xs font-medium uppercase tracking-wide">Kategori</span>
+      {/* Categories Horizontal System */}
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex items-center gap-2 text-brown-400">
+          <Filter size={16} />
+          <span className="text-xs font-bold uppercase tracking-[0.2em]">Filter by Category</span>
         </div>
-
-        {loadingCategories ? (
-          // Skeleton pills while categories are loading
-          [...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="h-8 rounded-full bg-gray-200 animate-pulse"
-              style={{ width: `${60 + i * 12}px` }}
-            />
-          ))
-        ) : (
-          categories.map((category) => (
-            <button
-              key={category}
-              onClick={() => onSelectCategory?.(category)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
-                selectedCategory === category
-                  ? 'bg-gradient-to-r from-primary to-accent text-white shadow-md'
-                  : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 border border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              {category}
-            </button>
-          ))
-        )}
+        
+        <div className="w-full overflow-x-auto no-scrollbar pb-2">
+          <div className="flex items-center justify-start lg:justify-center min-w-max gap-3 px-6">
+            {loadingCategories ? (
+              [...Array(5)].map((_, i) => (
+                <div
+                  key={i}
+                  className="h-10 w-24 rounded-full bg-beige-100 animate-pulse"
+                />
+              ))
+            ) : (
+              categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => onSelectCategory?.(category)}
+                  className={`px-8 py-2.5 rounded-full text-sm font-bold transition-all duration-300 border-2 ${
+                    selectedCategory === category
+                      ? 'bg-brown-900 border-brown-900 text-white shadow-luxury translate-y-[-2px]'
+                      : 'bg-white border-beige-200 text-brown-600 hover:border-brown-300 hover:bg-beige-50'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
