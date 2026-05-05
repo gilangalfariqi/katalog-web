@@ -23,7 +23,7 @@ export function HeroSection() {
           <div className="w-full lg:w-3/5 space-y-8 text-center lg:text-left">
             <div className="space-y-6">
               <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-xs md:text-sm font-bold tracking-[0.2em] uppercase rounded-full">
-                New Collection 2024
+                New Collection 2026
               </span>
               <h1 className="leading-[1.1] tracking-tight">
                 Timeless <span className="text-primary italic">Elegance</span> <br className="hidden md:block" /> For Your Style

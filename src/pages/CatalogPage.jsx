@@ -125,7 +125,7 @@ export function CatalogPage({ onCartClick }) {
               />
             </div>
             <div className="absolute -bottom-6 -left-6 bg-primary p-8 rounded-2xl shadow-luxury hidden md:block">
-              <p className="text-brown-900 font-serif font-black text-2xl italic leading-tight">Since <br /> 2024</p>
+              <p className="text-brown-900 font-serif font-black text-2xl italic leading-tight">Since <br /> 2026</p>
             </div>
           </div>
         </div>
